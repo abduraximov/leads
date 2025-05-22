@@ -1,4 +1,8 @@
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 from .base import *  # noqa
+
 
 ###################################################################
 # General
@@ -27,3 +31,10 @@ CORS_ALLOW_HEADERS = ["*"]
 REDIS_HOST = env.str("REDIS_HOST", "redis")
 REDIS_PORT = env.int("REDIS_PORT", 6379)
 REDIS_DB = env.int("REDIS_DB", 0)
+
+
+sentry_sdk.init(
+    dsn="some sentry dsn",
+    integrations=[DjangoIntegration()],
+    traces_sample_rate=1.0,
+)
