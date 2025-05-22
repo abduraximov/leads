@@ -12,8 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import logging
 import os
 from pathlib import Path
+from datetime import timedelta
 
-import dj_database_url
 import environ
 
 from core.jazzmin_conf import *  # noqa
@@ -49,6 +49,8 @@ DJANGO_APPS = [
 
 CUSTOM_APPS = [
     "apps.common",
+    "apps.leads",
+    "apps.users",
 ]
 
 THIRD_PARTY_APPS = [
@@ -56,22 +58,62 @@ THIRD_PARTY_APPS = [
     "drf_yasg",
     "corsheaders",
     "modeltranslation",
-    "captcha",
     'nplusone.ext.django',
 ]
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
-        "apps.text_services.filters.MultiSymbolSearchFilter",
     ),
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 10,
 }
+
+# SIMPLE JWT SETTINGS
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=14),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": False,
+    "UPDATE_LAST_LOGIN": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "VERIFYING_KEY": "",
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "JSON_ENCODER": None,
+    "JWK_URL": None,
+    "LEEWAY": 0,
+
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
+
+    "JTI_CLAIM": "jti",
+
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+
+    "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
+    "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
+    "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
+    "TOKEN_BLACKLIST_SERIALIZER": "rest_framework_simplejwt.serializers.TokenBlacklistSerializer",
+    "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
+    "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
+}
+
 
 INSTALLED_APPS = DJANGO_APPS + CUSTOM_APPS + THIRD_PARTY_APPS
 
@@ -110,22 +152,18 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": env.str("DB_ENGINE"),
-#         "NAME": env.str("DB_NAME"),
-#         "USER": env.str("DB_USER"),
-#         "PASSWORD": env.get_value("DB_PASSWORD"),
-#         "HOST": env.str("DB_HOST"),
-#         "PORT": env.str("DB_PORT"),
-#         "ATOMIC_REQUESTS": True,
-#     }
-# }
 DATABASES = {
-    'default': dj_database_url.config(),
+    "default": {
+        "ENGINE": env.str("DB_ENGINE"),
+        "NAME": env.str("DB_NAME"),
+        "USER": env.str("DB_USER"),
+        "PASSWORD": env.get_value("DB_PASSWORD"),
+        "HOST": env.str("DB_HOST"),
+        "PORT": env.str("DB_PORT"),
+        "ATOMIC_REQUESTS": True,
+    }
 }
-DATABASES["default"]["ATOMIC_REQUESTS"] = True
-DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -163,6 +201,8 @@ LOGGING = {
     },
 }
 
+AUTH_USER_MODEL = "users.User"
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -194,7 +234,7 @@ CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": f"{env.str('REDIS_URL', 'redis://localhost:6379/0')}",
-        "KEY_PREFIX": "boilerplate",  # todo: you must change this with your project name or something else
+        "KEY_PREFIX": "leads",
     }
 }
 
@@ -212,14 +252,3 @@ CELERY_TIMEZONE = "Asia/Tashkent"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
-# CYPHER CONFIGURATION
-# AES
-AES_KEY = env.str("AES_KEY", "")
-
-# RECAPTCHA
-RECAPTCHA_PUBLIC_KEY = env.str(
-    "RECAPTCHA_PUBLIC_KEY", "6LdlOWYpAAAAAOEsejvu7mT-tYr9PBmMlYbVio7R"
-)
-RECAPTCHA_PRIVATE_KEY = env.str(
-    "RECAPTCHA_PRIVATE_KEY", "6LdlOWYpAAAAAP2nediVlYsjEXrFZpzH4DZlUarQ"
-)

@@ -8,10 +8,9 @@ djangorestframework
 django-filter
 django-modeltranslation
 django-redis
-cryptography==41.0.7
-django-recaptcha==3.0.0
 nplusone==1.0.0
 celery==5.3.6
 redis==5.0.1
 flower==2.0.1
 dj-database-url==2.2.0
+djangorestframework-simplejwt==4.8.0
