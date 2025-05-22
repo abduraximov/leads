@@ -129,3 +129,7 @@ pre-commit install
 Here is a brief overview of the flow.
 
 ![img_1.png](img_1.png)
+
+
+Here is swagger url after running the project.
+/swagger/
