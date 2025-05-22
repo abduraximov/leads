@@ -132,4 +132,4 @@ Here is a brief overview of the flow.
 
 
 Here is swagger url after running the project.
-/swagger/
+```http://127.0.0.1:8000/swagger/```
