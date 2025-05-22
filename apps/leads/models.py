@@ -21,7 +21,7 @@ class Lead(BaseModel):
     """
     first_name = models.CharField(_("First Name"), max_length=255)
     last_name = models.CharField(_("Last Name"), max_length=255)
-    email = models.EmailField(_("Email"), unique=True)
+    email = models.EmailField(_("Email"))
     resume = models.FileField(_("Resume/CV"), upload_to="resumes/")
     state = models.CharField(
         _("State"),
