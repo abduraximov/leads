@@ -126,5 +126,6 @@ pre-commit install
 
 - [ ] Conduct load testing to ensure the application can handle expected traffic volumes (using Locust.io).
 
+Here is a brief overview of the flow.
 
 ![img_1.png](img_1.png)
