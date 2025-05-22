@@ -131,5 +131,8 @@ Here is a brief overview of the flow.
 ![img_1.png](img_1.png)
 
 
-Here is swagger url after running the project.
-```http://127.0.0.1:8000/swagger/```
+Here is swagger url after running the project:
+
+```
+http://127.0.0.1:8000/swagger/
+```
