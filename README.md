@@ -1,7 +1,3 @@
-# Django-Boilerplate
-
-Django-Boilerplate for start a new project
-
 ## How to set up project (with Docker)
 
 Give permission to docker script: ```chmod +x ./docker-compose```
@@ -129,3 +125,6 @@ pre-commit install
 ## 10. Testing the Production Environment:
 
 - [ ] Conduct load testing to ensure the application can handle expected traffic volumes (using Locust.io).
+
+
+![img_1.png](img_1.png)

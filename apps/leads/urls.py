@@ -7,5 +7,5 @@ from apps.leads.api_endpoints import panel
 app_name = "leads"
 
 urlpatterns = [
-    path("leads/apply/", app.LeadsApplyView.as_view(), name="leads_apply"),
+    path("apply/", app.LeadsApplyView.as_view(), name="leads_apply"),
 ]
